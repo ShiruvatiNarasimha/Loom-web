@@ -17,6 +17,7 @@ datasource db {
 model User {
   id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email      String @unique
+  studio     Media?
   firstName  String?
   lastName   String?
   clerkid    String  @unique
@@ -39,4 +40,6 @@ model Media {
   mic        String?
   camera     String?
   preset     PRESET   @default(SD)
+  User User? @relation(fields: [userId], references: [id])
+  userId    String?  @unique @db.Uuid
 }
