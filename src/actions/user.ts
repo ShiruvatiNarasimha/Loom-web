@@ -33,8 +33,40 @@ export const onAuthenticateUser = async () => {
         email: user.emailAddresses[0].emailAddress,
         firstname: user.firstName,
         lastname: user.lastName,
+        image: user.imageUrl,
+        studio: {
+          create: {},
+        },
+        subscription: {
+          create: {},
+        },
+        workspace: {
+          create: {
+            name: `${user.firstName}'s WorKspace`,
+            type: "PERSONAL",
+          },
+        },
+      },
+      include: {
+        workspace: {
+          where: {
+            User: {
+              clerkid: user.id,
+            },
+          },
+        },
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
       },
     });
-    return { status: 200, user: newUser };
-  } catch (error) {}
+    if (newUser) {
+      return { status: 201, user: newUser };
+    }
+    return { status: 400 };
+  } catch (error) {
+    return { status: 500 };
+  }
 };
